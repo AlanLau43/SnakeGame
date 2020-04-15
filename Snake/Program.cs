@@ -28,7 +28,7 @@ namespace Snake
             byte down = 2;
             byte up = 3;
             int lastFoodTime = 0;
-            int foodDissapearTime = 12000; //extend time **********************************
+            int foodDissapearTime = 14000; //extended the time
             int negativePoints = 0;
 
             Position[] directions = new Position[]
@@ -82,7 +82,7 @@ namespace Snake
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write("*");
             }
-
+            
             while (true)
             {
                 negativePoints++;
@@ -108,7 +108,7 @@ namespace Snake
                     }
                    
    
-                }
+                   }
 
                 Position snakeHead = snakeElements.Last();
                 Position nextDirection = directions[direction];
@@ -126,7 +126,7 @@ namespace Snake
                     Console.SetCursorPosition(0, 0);
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Game over!");
-                    int userPoints = (snakeElements.Count - 6) * 100; //too fast *****************************************
+                    int userPoints = (snakeElements.Count - 6) * 100; //removed negativePoints because it's decreasing too fast.
                     //if (userPoints < 0) userPoints = 0;
                     userPoints = Math.Max(userPoints, 0);
                     Console.WriteLine("Your points are: {0}", userPoints);
@@ -164,8 +164,8 @@ namespace Snake
                     Position obstacle = new Position();
                     do
                     {
-                        obstacle = new Position(randomNumbersGenerator.Next(0, Console.WindowHeight),
-                            randomNumbersGenerator.Next(0, Console.WindowWidth));
+                        obstacle = new Position(randomNumbersGenerator.Next(0, 30),
+                            randomNumbersGenerator.Next(0, 120));
                     }
                     while (snakeElements.Contains(obstacle) ||
                         obstacles.Contains(obstacle) ||
@@ -190,8 +190,8 @@ namespace Snake
                     Console.Write(" ");
                     do
                     {
-                        food = new Position(randomNumbersGenerator.Next(0, Console.WindowHeight),
-                            randomNumbersGenerator.Next(0, Console.WindowWidth));
+                        food = new Position(randomNumbersGenerator.Next(0, 30),
+                            randomNumbersGenerator.Next(0, 120));
                     }
                     while (snakeElements.Contains(food) || obstacles.Contains(food));
                     lastFoodTime = Environment.TickCount;
@@ -200,7 +200,7 @@ namespace Snake
                 Console.SetCursorPosition(food.col, food.row);
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write("@");
-                Console.ForegroundColor = ConsoleColor.Black; //hide text  if click others button********************************
+                Console.ForegroundColor = ConsoleColor.Black; //hide text if clicked others button
                 Console.CursorVisible = false;
 
                 sleepTime -= 0.01;
