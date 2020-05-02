@@ -9,10 +9,14 @@ namespace Snake
     class Food
     {
         private Position food;
+        private Position extra;
         public Food()
         {
             Random randomNumbersGenerator = new Random();
             food = new Position(randomNumbersGenerator.Next(0, 30),
+                    randomNumbersGenerator.Next(0, 120));
+
+            extra = new Position(randomNumbersGenerator.Next(0, 30),
                     randomNumbersGenerator.Next(0, 120));
 
         }
@@ -26,6 +30,11 @@ namespace Snake
         public Position GetFood()
         {
             return food;
+        }
+
+        public Position GetExFood()
+        {
+            return extra;
         }
     }
 }
