@@ -23,6 +23,9 @@ namespace Snake
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            bool events = false;
+            int countdown = 9;
             int goal;
             System.Media.SoundPlayer player = new System.Media.SoundPlayer();
             player.SoundLocation = "../../music/backgroundmusic.wav";
@@ -93,67 +96,189 @@ namespace Snake
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.SetCursorPosition(ob.col, ob.row);
-                Console.Write("=");
+                Console.Write("\u2592");
             }
 
             Position fd = new Position();
-            while (snake.GetSnakeElements().Contains(fd) || obstacle.GetPositions().Contains(fd))
+            Position fd1 = new Position();
+            while (snake.GetSnakeElements().Contains(fd) || obstacle.GetPositions().Contains(fd) || snake.GetSnakeElements().Contains(fd1) || obstacle.GetPositions().Contains(fd1))
             {
-                x = randomNumbersGenerator.Next(0, 30);
+                x = randomNumbersGenerator.Next(2, 30);
                 y = randomNumbersGenerator.Next(0, 120);
                 fd = food.Generate(x, y);
+                fd1 = food.Generate(x, y+1);
             }
             
             Console.SetCursorPosition(fd.col, fd.row);
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("@");
+            Console.Write("\u2665\u2665");
 
             snake.SnakeBody();
+
             
             while (true)
             {
-                negativePoints++;
-                Console.SetCursorPosition(0,0);
+                Position snakeHead;
+                Position snakeNewHead;
+                Console.SetCursorPosition(0, 0);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Score: " + (userPoints).ToString());
                 Console.WriteLine("Goal: " + goal);
                 if (Console.KeyAvailable)
                 {
                     ConsoleKeyInfo userInput = Console.ReadKey();
-                    if (userInput.Key == ConsoleKey.LeftArrow)
-                    {
-                        if (snake.GetDirection() != Direction.right)
+                    if (events) {
+                        if (userInput.Key == ConsoleKey.LeftArrow)
                         {
-                            snake.SetDirection(Direction.left);
+                            if (snake.GetDirection() != Direction.left)
+                            {
+                               snake.SetDirection(Direction.right);
+                            }
+                        }
+                        else if (userInput.Key == ConsoleKey.RightArrow)
+                        {
+                            if (snake.GetDirection() != Direction.right)
+                            {
+                                snake.SetDirection(Direction.left);
+                            }
+                        }
+                        else if (userInput.Key == ConsoleKey.UpArrow)
+                        {
+                            if (snake.GetDirection() != Direction.up)
+                            {
+                                snake.SetDirection(Direction.down);
+                            }
+                        }
+                        else if (userInput.Key == ConsoleKey.DownArrow)
+                        {
+                            if (snake.GetDirection() != Direction.down)
+                            {
+                                snake.SetDirection(Direction.up);
+                            }
                         }
                     }
-                    else if (userInput.Key == ConsoleKey.RightArrow)
+                    else
                     {
-                        if (snake.GetDirection() != Direction.left)
+                        if (userInput.Key == ConsoleKey.LeftArrow)
                         {
-                            snake.SetDirection(Direction.right);
+                            if (snake.GetDirection() != Direction.right)
+                            {
+                                snake.SetDirection(Direction.left);
+                            }
+                        }
+                        else if (userInput.Key == ConsoleKey.RightArrow)
+                        {
+                            if (snake.GetDirection() != Direction.left)
+                            {
+                                snake.SetDirection(Direction.right);
+                            }
+                        }
+                        else if (userInput.Key == ConsoleKey.UpArrow)
+                        {
+                            if (snake.GetDirection() != Direction.down)
+                            {
+                                snake.SetDirection(Direction.up);
+                            }
+                        }
+                        else if (userInput.Key == ConsoleKey.DownArrow)
+                        {
+                            if (snake.GetDirection() != Direction.up)
+                            {
+                                snake.SetDirection(Direction.down);
+                            }
                         }
                     }
-                    else if (userInput.Key == ConsoleKey.UpArrow)
+                    if(userInput.Key == ConsoleKey.R)
                     {
-                        if (snake.GetDirection() != Direction.down)
+                        Console.Clear();
+                        menu.DrawMenu();
+                        Console.CursorVisible = false;
+                        userinput = Console.ReadKey();
+                        while (userinput.Key != ConsoleKey.Enter)
                         {
-                            snake.SetDirection(Direction.up);
+                            menu.SelectDiff(userinput);
+                            menu.DrawMenu();
+
+                            userinput = Console.ReadKey();
+
                         }
-                    }
-                    else if (userInput.Key == ConsoleKey.DownArrow)
-                    {
-                        if (snake.GetDirection() != Direction.up)
+                        Console.Clear();
+                        if (menu.GetDiff() == 0)
                         {
-                            snake.SetDirection(Direction.down);
+                            goal = 1000;
                         }
+                        else if (menu.GetDiff() == 1)
+                        {
+                            goal = 2000;
+                        }
+                        else
+                        {
+                            goal = 4000;
+                        }
+                        snake = new Snake();
+
+                        //Create obstacles object
+                        obstacle = new Obstacle();
+
+                        //Create a Food Object 
+                        food = new Food();
+
+                        //Extra Food
+                        z = 1;
+                        extra = food.GetExFood();
+                        spawn = false;
+
+                        foodDissapearTime = 14000; //extended the time
+                        if (menu.GetDiff() == 1)
+                        {
+                            foodDissapearTime = 10000;
+                        }
+                        else if (menu.GetDiff() == 2)
+                        {
+                            foodDissapearTime = 8000;
+                        }
+
+                        negativePoints = 0;
+                        userPoints = 0;
+
+                        sleepTime = 100;
+                        randomNumbersGenerator = new Random();
+                        randomNumbersGenerator2 = new Random();
+
+                        Console.BufferHeight = Console.WindowHeight;
+                        lastFoodTime = Environment.TickCount;
+
+                        foreach (Position ob in obstacle.GetPositions())
+                        {
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.SetCursorPosition(ob.col, ob.row);
+                            Console.Write("\u2592");
+                        }
+
+                        fd = new Position();
+                        fd1 = new Position();
+                        while (snake.GetSnakeElements().Contains(fd) || obstacle.GetPositions().Contains(fd) || snake.GetSnakeElements().Contains(fd1) || obstacle.GetPositions().Contains(fd1))
+                        {
+                            x = randomNumbersGenerator.Next(2, 30);
+                            y = randomNumbersGenerator.Next(0, 120);
+                            fd = food.Generate(x, y);
+                            fd1 = food.Generate(x, y+1);
+                        }
+
+                        Console.SetCursorPosition(fd.col, fd.row);
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("\u2665\u2665");
+
+                        snake.SnakeBody();
+
+                        snakeHead = snake.GetSnakeElements().Last();
+                        snakeNewHead = snake.Move_Snake(snakeHead);
                     }
                    
                    }
-    
-                Position snakeHead = snake.GetSnakeElements().Last();
-                Position snakeNewHead = snake.Move_Snake(snakeHead);
-
+                
+                snakeHead = snake.GetSnakeElements().Last();
+                snakeNewHead = snake.Move_Snake(snakeHead);
                 //Winning Requirement
                 if (userPoints == goal)
                 {
@@ -168,10 +293,7 @@ namespace Snake
                     if (!File.Exists(path))
                     {
                         // Create a file to write to.
-                        using (StreamWriter sw = File.CreateText(path))
-                        {
-                            sw.WriteLine("Clear Stage");
-                        }
+                        Console.WriteLine("Can't Open the File, Please try again");
                     }
                     else
                     {
@@ -183,6 +305,93 @@ namespace Snake
                     ConsoleKeyInfo userInput = Console.ReadKey();
                     while (true)
                     {
+                        if (userInput.Key == ConsoleKey.R)
+                        {
+                            Console.Clear();
+                            menu.DrawMenu();
+                            Console.CursorVisible = false;
+                            userinput = Console.ReadKey();
+                            while (userinput.Key != ConsoleKey.Enter)
+                            {
+                                menu.SelectDiff(userinput);
+                                menu.DrawMenu();
+
+                                userinput = Console.ReadKey();
+
+                            }
+                            Console.Clear();
+                            if (menu.GetDiff() == 0)
+                            {
+                                goal = 1000;
+                            }
+                            else if (menu.GetDiff() == 1)
+                            {
+                                goal = 2000;
+                            }
+                            else
+                            {
+                                goal = 4000;
+                            }
+                            snake = new Snake();
+
+                            //Create obstacles object
+                            obstacle = new Obstacle();
+
+                            //Create a Food Object 
+                            food = new Food();
+
+                            //Extra Food
+                            z = 1;
+                            extra = food.GetExFood();
+                            spawn = false;
+
+                            foodDissapearTime = 14000; //extended the time
+                            if (menu.GetDiff() == 1)
+                            {
+                                foodDissapearTime = 10000;
+                            }
+                            else if (menu.GetDiff() == 2)
+                            {
+                                foodDissapearTime = 8000;
+                            }
+
+                            negativePoints = 0;
+                            userPoints = 0;
+
+                            sleepTime = 100;
+                            randomNumbersGenerator = new Random();
+
+                            Console.BufferHeight = Console.WindowHeight;
+                            lastFoodTime = Environment.TickCount;
+
+                            foreach (Position ob in obstacle.GetPositions())
+                            {
+                                Console.ForegroundColor = ConsoleColor.Cyan;
+                                Console.SetCursorPosition(ob.col, ob.row);
+                                Console.Write("=");
+                            }
+
+                            fd = new Position();
+                            fd1 = new Position();
+                            while (snake.GetSnakeElements().Contains(fd) || obstacle.GetPositions().Contains(fd) || snake.GetSnakeElements().Contains(fd1) || obstacle.GetPositions().Contains(fd1))
+                            {
+                                x = randomNumbersGenerator.Next(2, 30);
+                                y = randomNumbersGenerator.Next(0, 120);
+                                fd = food.Generate(x, y);
+                                fd1 = food.Generate(x, y+1);
+                            }
+
+                            Console.SetCursorPosition(fd.col, fd.row);
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write("\u2665\u2665");
+
+                            snake.SnakeBody();
+                            snakeHead = snake.GetSnakeElements().Last();
+                            snakeNewHead = snake.Move_Snake(snakeHead);
+
+                            break;
+                        }
+
                         if (userInput.Key == ConsoleKey.Enter)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
@@ -211,22 +420,104 @@ namespace Snake
                     if (!File.Exists(path))
                     {
                         // Create a file to write to.
-                        using (StreamWriter sw = File.CreateText(path))
-                        {
-                            sw.WriteLine(userPoints);
-                        }
+                        Console.WriteLine("Can't Open the File, Please try again");
                     }
                     else
                     {
                         using (StreamWriter sw = File.AppendText(path))
                         {
                             sw.WriteLine(userPoints);
-             
                         }
                     }
                     ConsoleKeyInfo userInput = Console.ReadKey();
                     while (true)
                     {
+                        if (userInput.Key == ConsoleKey.R)
+                        {
+                            Console.Clear();
+                            menu.DrawMenu();
+                            Console.CursorVisible = false;
+                            userinput = Console.ReadKey();
+                            while (userinput.Key != ConsoleKey.Enter)
+                            {
+                                menu.SelectDiff(userinput);
+                                menu.DrawMenu();
+
+                                userinput = Console.ReadKey();
+
+                            }
+                            Console.Clear();
+                            if (menu.GetDiff() == 0)
+                            {
+                                goal = 1000;
+                            }
+                            else if (menu.GetDiff() == 1)
+                            {
+                                goal = 2000;
+                            }
+                            else
+                            {
+                                goal = 4000;
+                            }
+
+                            snake = new Snake();
+                            //Create obstacles object
+                            obstacle = new Obstacle();
+
+                            //Create a Food Object 
+                            food = new Food();
+
+                            //Extra Food
+                            z = 1;
+                            extra = food.GetExFood();
+                            spawn = false;
+
+                            foodDissapearTime = 14000; //extended the time
+                            if (menu.GetDiff() == 1)
+                            {
+                                foodDissapearTime = 10000;
+                            }
+                            else if (menu.GetDiff() == 2)
+                            {
+                                foodDissapearTime = 8000;
+                            }
+
+                            negativePoints = 0;
+                            userPoints = 0;
+
+                            sleepTime = 100;
+                            randomNumbersGenerator = new Random();
+
+                            Console.BufferHeight = Console.WindowHeight;
+                            lastFoodTime = Environment.TickCount;
+
+                            foreach (Position ob in obstacle.GetPositions())
+                            {
+                                Console.ForegroundColor = ConsoleColor.Cyan;
+                                Console.SetCursorPosition(ob.col, ob.row);
+                                Console.Write("\u2592");
+                            }
+
+
+                            fd = new Position();
+                            fd1 = new Position();
+                            while (snake.GetSnakeElements().Contains(fd) || obstacle.GetPositions().Contains(fd) || snake.GetSnakeElements().Contains(fd1) || obstacle.GetPositions().Contains(fd1))
+                            {
+                                x = randomNumbersGenerator.Next(0, 30);
+                                y = randomNumbersGenerator.Next(0, 120);
+                                fd = food.Generate(x, y);
+                                fd1 = food.Generate(x , y+1);
+                            }
+
+                            Console.SetCursorPosition(fd.col, fd.row);
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write("\u2665\u2665");
+
+                            snake.SnakeBody();
+                            snakeHead = snake.GetSnakeElements().Last();
+                            snakeNewHead = snake.Move_Snake(snakeHead);
+                            break;
+                        }
                         if (userInput.Key == ConsoleKey.Enter)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
@@ -250,29 +541,32 @@ namespace Snake
                 Console.Write(head);
 
 
-                if (snakeNewHead.col == fd.col && snakeNewHead.row == fd.row)
+                if ((snakeNewHead.col == fd.col && snakeNewHead.row == fd.row) || (snakeNewHead.col == fd1.col && snakeNewHead.row == fd1.row))
                 {
                     System.Media.SoundPlayer player2 = new System.Media.SoundPlayer();
                     player2.SoundLocation = "../../music/soundeffect.wav";
                     player2.Play();
+                    Console.SetCursorPosition(fd.col, fd.row);
+                    Console.Write("  ");
 
                     userPoints += 100;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.SetCursorPosition(0, 0);
                     Console.Write("Score :" + (userPoints).ToString());
-                    
+
                     // feeding the snake
-                    while (snake.GetSnakeElements().Contains(fd) || obstacle.GetPositions().Contains(fd))
+                    while (snake.GetSnakeElements().Contains(fd) || obstacle.GetPositions().Contains(fd) || snake.GetSnakeElements().Contains(fd1) || obstacle.GetPositions().Contains(fd1))
                     {
-                        x = randomNumbersGenerator.Next(0, Console.WindowHeight);
-                        y = randomNumbersGenerator.Next(0, Console.WindowWidth);
+                        x = randomNumbersGenerator.Next(2, 30);
+                        y = randomNumbersGenerator.Next(0, 120);
                         fd = food.Generate(x, y);
+                        fd1 = food.Generate(x , y + 1);
                     }
-                    z = randomNumbersGenerator.Next(0, 10);
+                    z = randomNumbersGenerator.Next(0, 1);
                     lastFoodTime = Environment.TickCount;
                     Console.SetCursorPosition(fd.col, fd.row);
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("@");
+                    Console.Write("\u2665\u2665");
                     if (menu.GetDiff() == 0)
                     {
                         sleepTime -= 0.01;
@@ -293,7 +587,7 @@ namespace Snake
                         obstacle.GetPositions().Contains(ob) ||
                         (fd.row != ob.row && fd.col != ob.row))
                     {
-                        x = randomNumbersGenerator.Next(0, Console.WindowHeight);
+                        x = randomNumbersGenerator.Next(2, Console.WindowHeight);
                         y = randomNumbersGenerator.Next(0, Console.WindowWidth);
                         ob = obstacle.Generate(x,y);
                     }
@@ -301,7 +595,7 @@ namespace Snake
                     obstacle.GetPositions().Add(ob);
                     Console.SetCursorPosition(ob.col, ob.row);
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.Write("=");
+                    Console.Write("\u2592");
 
                     if (menu.GetDiff() == 2)
                     {
@@ -309,7 +603,7 @@ namespace Snake
                         obstacle.GetPositions().Contains(ob) ||
                         (fd.row != ob.row && fd.col != ob.row))
                         {
-                            x = randomNumbersGenerator.Next(0, Console.WindowHeight);
+                            x = randomNumbersGenerator.Next(2, Console.WindowHeight);
                             y = randomNumbersGenerator.Next(0, Console.WindowWidth);
                             ob = obstacle.Generate(x, y);
                         }
@@ -317,7 +611,7 @@ namespace Snake
                         obstacle.GetPositions().Add(ob);
                         Console.SetCursorPosition(ob.col, ob.row);
                         Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.Write("=");
+                        Console.Write("\u2592");
                     }
                 }
                 else
@@ -334,18 +628,19 @@ namespace Snake
 
                     do
                     {
-                        x = randomNumbersGenerator.Next(0, Console.WindowHeight);
+                        x = randomNumbersGenerator.Next(2, Console.WindowHeight);
                         y = randomNumbersGenerator.Next(0, Console.WindowWidth);
                         fd = food.Generate(x, y);
-                        Console.WriteLine(" ");
+                        fd1 = food.Generate(x, y + 1);
+                        Console.WriteLine("  ");
                     }
-                    while (snake.GetSnakeElements().Contains(fd) || obstacle.GetPositions().Contains(fd));
+                    while (snake.GetSnakeElements().Contains(fd) || obstacle.GetPositions().Contains(fd) || snake.GetSnakeElements().Contains(fd1) || obstacle.GetPositions().Contains(fd1));
                     lastFoodTime = Environment.TickCount;
 
                     lastFoodTime = Environment.TickCount;
                     Console.SetCursorPosition(fd.col, fd.row);
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("@");
+                    Console.Write("\u2665\u2665");
                 }
 
                 if (menu.GetDiff() == 2)
@@ -354,7 +649,7 @@ namespace Snake
                     {
                         do
                         {
-                            x = randomNumbersGenerator.Next(0, Console.WindowHeight);
+                            x = randomNumbersGenerator.Next(2, Console.WindowHeight);
                             y = randomNumbersGenerator.Next(0, Console.WindowWidth);
                             extra = food.Generate(x, y);
 
@@ -370,7 +665,7 @@ namespace Snake
 
                     if (spawn)
                     {
-                        if (Environment.TickCount - lastFoodTime >= 5000)
+                        if (Environment.TickCount - lastFoodTime >= 4000)
                         {
                             Console.SetCursorPosition(extra.col, extra.row);
                             Console.WriteLine(" ");
@@ -385,6 +680,31 @@ namespace Snake
                             spawn = false;
                         }
                     }
+                }
+                if (userPoints > 0 && userPoints % 500 == 0 && events == false)
+                {
+                    events = true;
+                    countdown = 9;
+                }
+
+                if (events)
+                {
+                    Console.SetCursorPosition(Console.WindowWidth-30, 0);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write("Upside Down Event!!!: ");
+                    Console.Write(countdown);
+                    if(Environment.TickCount - lastFoodTime >= 1000)
+                    {
+                        lastFoodTime = Environment.TickCount;
+                        countdown -= 1;
+                    }
+                    if (countdown == 0)
+                    {
+                        Console.SetCursorPosition(Console.WindowWidth - 30, 0);
+                        Console.Write(new string(' ',30));
+                        events = false;
+                    }
+
                 }
                 Console.ForegroundColor = ConsoleColor.Black; //hide text if clicked others button
                 Console.CursorVisible = false;
