@@ -56,7 +56,7 @@ namespace Snake
             {
                 goal = 4000;
             }
-
+            
             //Create a snake object
             Snake snake = new Snake();
 
@@ -89,6 +89,10 @@ namespace Snake
             Random randomNumbersGenerator2 = new Random();
             int x;
             int y;
+
+            int SnakeColor;
+            //Snake Initial Colour
+            SnakeColor = randomNumbersGenerator.Next(0, 5);
             Console.BufferHeight = Console.WindowHeight;
             lastFoodTime = Environment.TickCount;
 
@@ -540,7 +544,30 @@ namespace Snake
                 }
 
                 Console.SetCursorPosition(snakeHead.col, snakeHead.row);
-                Console.ForegroundColor = ConsoleColor.DarkGray;
+                if(SnakeColor == 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                }else if(SnakeColor == 1)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                }
+                else if (SnakeColor == 2)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                else if (SnakeColor == 3)
+                {
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                }
+                else if (SnakeColor == 4)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                }
+                else if (SnakeColor == 5)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+
                 Console.Write("*");
 
                 snake.GetSnakeElements().Enqueue(snakeNewHead);
@@ -550,6 +577,7 @@ namespace Snake
                 Console.Write(head);
 
 
+                // feeding the snake
                 if ((snakeNewHead.col == fd.col && snakeNewHead.row == fd.row) || (snakeNewHead.col == fd1.col && snakeNewHead.row == fd1.row))
                 {
                     System.Media.SoundPlayer player2 = new System.Media.SoundPlayer();
@@ -557,13 +585,13 @@ namespace Snake
                     player2.Play();
                     Console.SetCursorPosition(fd.col, fd.row);
                     Console.Write("  ");
-
+                    SnakeColor = randomNumbersGenerator.Next(0, 5);
                     userPoints += 100;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.SetCursorPosition(0, 0);
                     Console.Write("Score :" + (userPoints).ToString());
 
-                    // feeding the snake
+                    
                     while (snake.GetSnakeElements().Contains(fd) || obstacle.GetPositions().Contains(fd) || snake.GetSnakeElements().Contains(fd1) || obstacle.GetPositions().Contains(fd1))
                     {
                         x = randomNumbersGenerator.Next(2, 30);
