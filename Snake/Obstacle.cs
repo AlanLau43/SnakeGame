@@ -14,15 +14,15 @@ namespace Snake
             Random randomNumbersGenerator = new Random();
             obstacles = new List<Position>()
             {
-                new Position(randomNumbersGenerator.Next(0, 30),
+                new Position(randomNumbersGenerator.Next(2, 30),
                             randomNumbersGenerator.Next(0, 120)),
                 new Position(randomNumbersGenerator.Next(0, 30),
-                            randomNumbersGenerator.Next(0, 120)),
+                            randomNumbersGenerator.Next(2, 120)),
                 new Position(randomNumbersGenerator.Next(0, 30),
                             randomNumbersGenerator.Next(0, 120)),
-                new Position(randomNumbersGenerator.Next(0, 30),
+                new Position(randomNumbersGenerator.Next(2, 30),
                             randomNumbersGenerator.Next(0, 120)),
-                new Position(randomNumbersGenerator.Next(0, 30),
+                new Position(randomNumbersGenerator.Next(2, 30),
                             randomNumbersGenerator.Next(0, 120)),
             };
         }

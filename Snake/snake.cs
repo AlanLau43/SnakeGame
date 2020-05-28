@@ -16,7 +16,7 @@ namespace Snake
             snakeElements = new Queue<Position>();
             for (int i = 0; i <=3; i++)
             {
-                snakeElements.Enqueue(new Position(0, i));
+                snakeElements.Enqueue(new Position(2, i));
             }
         }
 
@@ -46,14 +46,14 @@ namespace Snake
                 snakeNewHead.col = Console.WindowWidth - 1;
             }
 
-            if (snakeNewHead.row < 0)
+            if (snakeNewHead.row < 2)
             {
                 snakeNewHead.row = Console.WindowHeight - 1;
             }
 
             if (snakeNewHead.row >= Console.WindowHeight)
             {
-                snakeNewHead.row = 0;
+                snakeNewHead.row = 2;
             }
 
             if (snakeNewHead.col >= Console.WindowWidth)
@@ -88,12 +88,11 @@ namespace Snake
             }
         }
 
-        public void SnakeBody()
+        public void SnakeBody(int color)
         {
             foreach (Position position in snakeElements)
             {
                 Console.SetCursorPosition(position.col, position.row);
-                Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write("*");
             }
         }
@@ -109,6 +108,20 @@ namespace Snake
             return snakeElements;
         }
 
+        public void Clear()
+        {
+            snakeElements.Clear();
+        }
+
+        public void Reset()
+        {
+            direction = Direction.right;
+            snakeElements = new Queue<Position>();
+            for (int i = 0; i <= 3; i++)
+            {
+                snakeElements.Enqueue(new Position(0, i));
+            }
+        }
         public Direction GetDirection()
         {
             return direction;

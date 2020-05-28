@@ -17,6 +17,23 @@ namespace Snake
 
         public void DrawMenu()
         {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition((Console.WindowWidth / 2)-10, (Console.WindowHeight / 4) - 6);
+            Console.Write("Snake Game");
+            Console.SetCursorPosition((Console.WindowWidth / 2)-10, (Console.WindowHeight / 4) - 4);
+            Console.Write("How to play: ");
+            Console.SetCursorPosition((Console.WindowWidth / 2) - 10, (Console.WindowHeight / 4) - 2);
+            Console.Write("\u005E Move Up");
+            Console.SetCursorPosition((Console.WindowWidth / 2) - 10, (Console.WindowHeight / 4) - 1);
+            Console.Write("\u02C5 Move Down");
+            Console.SetCursorPosition((Console.WindowWidth / 2) - 10, (Console.WindowHeight / 4) );
+            Console.Write("\u003C Move Left");
+            Console.SetCursorPosition((Console.WindowWidth / 2) - 10, (Console.WindowHeight / 4) + 1);
+            Console.Write("\u003E Move Right");
+            Console.SetCursorPosition((Console.WindowWidth / 2) - 10, (Console.WindowHeight / 4) + 2);
+            Console.Write("r Restart");
+            Console.SetCursorPosition((Console.WindowWidth / 2) - 15, (Console.WindowHeight / 4) + 4);
+            Console.Write("Difficulty Selection: ");
             if (difficulty == 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;

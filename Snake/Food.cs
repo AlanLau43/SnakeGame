@@ -13,10 +13,10 @@ namespace Snake
         public Food()
         {
             Random randomNumbersGenerator = new Random();
-            food = new Position(randomNumbersGenerator.Next(0, 30),
+            food = new Position(randomNumbersGenerator.Next(2, 30),
                     randomNumbersGenerator.Next(0, 120));
 
-            extra = new Position(randomNumbersGenerator.Next(0, 30),
+            extra = new Position(randomNumbersGenerator.Next(2, 30),
                     randomNumbersGenerator.Next(0, 120));
 
         }
@@ -24,6 +24,7 @@ namespace Snake
         public Position Generate(int x, int y)
         {
             Position g = new Position(x,y);
+
             return g;
         }
 
